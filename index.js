@@ -120,7 +120,7 @@ function startGulp(name, opts) {
     });
 
     gulp.task('browser:maketests', shell.task([
-      'find test/ -type f -name "*.js" | xargs ' + buildBinPath + 'browserify -t brfs -o tests.js'
+      'find test/ -type f -name "*.js" | xargs ' + buildBinPath + 'browserify -t ' + buildModulesPath + 'brfs -r ' + buildModulesPath + 'chai -o tests.js'
     ]));
 
     gulp.task('browser', function(callback) {
