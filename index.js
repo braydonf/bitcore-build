@@ -59,8 +59,6 @@ function startGulp(name, opts) {
   var alljs = files.concat(tests);
 
   var buildPath = './node_modules/bitcore-build/';
-  var buildModulesPath = buildPath + 'node_modules/';
-  var buildBinPath = buildPath + 'node_modules/.bin/';
 
   /**
    * testing
@@ -72,7 +70,7 @@ function startGulp(name, opts) {
   };
 
   var testkarma = shell.task([
-    buildModulesPath + 'karma/bin/karma start ' + buildPath + 'karma.conf.js'
+    'karma start ' + buildPath + 'karma.conf.js'
   ]);
 
   gulp.task('test:node', testmocha);
@@ -102,9 +100,9 @@ function startGulp(name, opts) {
     var browserifyCommand;
 
     if (name !== 'lib') {
-      browserifyCommand = buildBinPath + 'browserify --require ./index.js:' + fullname + ' --external bitcore-lib -o ' + fullname + '.js';
+      browserifyCommand = 'browserify --require ./index.js:' + fullname + ' --external bitcore-lib -o ' + fullname + '.js';
     } else {
-      browserifyCommand = buildBinPath + 'browserify --require ./index.js:bitcore-lib -o bitcore-lib.js';
+      browserifyCommand = 'browserify --require ./index.js:bitcore-lib -o bitcore-lib.js';
     }
 
     gulp.task('browser:uncompressed', shell.task([
@@ -123,7 +121,7 @@ function startGulp(name, opts) {
     });
 
     gulp.task('browser:maketests', shell.task([
-      'find test/ -type f -name "*.js" | xargs ' + buildBinPath + 'browserify -t brfs -o tests.js'
+      'find test/ -type f -name "*.js" | xargs browserify -t brfs -o tests.js'
     ]));
 
     gulp.task('browser', function(callback) {
@@ -141,9 +139,9 @@ function startGulp(name, opts) {
       .pipe(jshint.reporter('default'));
   });
 
-  gulp.task('plato', shell.task([buildBinPath + 'plato -d report -r -l .jshintrc -t ' + fullname + ' lib']));
+  gulp.task('plato', shell.task(['plato -d report -r -l .jshintrc -t ' + fullname + ' lib']));
 
-  gulp.task('coverage', shell.task([buildBinPath + './istanbul cover ' + buildBinPath + '_mocha -- --recursive']));
+  gulp.task('coverage', shell.task(['istanbul cover _mocha -- --recursive']));
 
   gulp.task('coveralls', ['coverage'], function() {
     gulp.src('coverage/lcov.info').pipe(coveralls());
